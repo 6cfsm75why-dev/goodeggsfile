@@ -469,8 +469,18 @@ function deleteNode(tree, id) {
 function countFiles(tree) { let c = 0; if (!tree) return 0; for (let n of tree) { if (!n) continue; if (n.type === 'folder' || n.nodeType === 'folder') c += countFiles(n.children || []); else c++; } return c; }
 function countByType(tree, t) { let c = 0; if (!tree) return 0; for (let n of tree) { if (!n) continue; if (n.type === 'folder' || n.nodeType === 'folder') c += countByType(n.children || [], t); else if (n.type === t) c++; } return c; }
 function flattenFolders(tree, p = '') { let r = []; if (!tree) return r; for (let n of tree) { if (!n) continue; if (n.type === 'folder' || n.nodeType === 'folder') { const pt = p + n.name; r.push({ id: n.id, name: pt }); r = r.concat(flattenFolders(n.children || [], pt + '/')); } } return r; }
-function flattenFolderPath(tree, tid, cp = '') { if (!tree) return cp; for (let n of tree) { if (!n) continue; if (n.id === tid) return cp + n.name; if ((n.type === 'folder' || n.nodeType === 'folder') && n.children) { const f = flattenFolderPath(n.children, tid, cp + n.name + '/'); if (f) return f; } } return cp; }
-
+function flattenFolderPath(tree, tid, cp = '') {
+  if (!tree) return cp;
+  for (let n of tree) {
+    if (!n) continue;
+    if (n.id === tid) return cp + safeFileName(n.name);
+    if ((n.type === 'folder' || n.nodeType === 'folder') && n.children) {
+      const f = flattenFolderPath(n.children, tid, cp + safeFileName(n.name) + '/');
+      if (f) return f;
+    }
+  }
+  return cp;
+}
 function saveSubject() {
   const name = document.getElementById('new-name').value.trim();
   const desc = document.getElementById('new-description').value.trim();
