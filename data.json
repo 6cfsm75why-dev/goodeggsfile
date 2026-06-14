@@ -1,0 +1,52 @@
+[
+  {
+    "id": "mqdux2qs4t1u0",
+    "name": "Joseph Wregglesworth",
+    "alias": "Wreggy",
+    "code": "JSW-001",
+    "threat": "extreme",
+    "location": "Eastfield Avenue",
+    "status": "Under Surveillance",
+    "description": "Joseph Rowntree School Sixth Form Student and local pedophile. Born September 11, 2007, in York, UK Known for cultivating relationships with prominent individuals in football, clubs, school, and drives. Maintained residences in multiple jurisdictions and operated within elite social circles. Demonstrated significant ability to establish and leverage high-level personal and professional connections.",
+    "notes": "Convicted in 2024 in Florida on charges involving solicitation of prostitution from a minor and related offenses.\nArrested in July 2025 on federal sex trafficking charges involving underage girls.\nMaintained extensive contact networks that included influential public figures from multiple countries.\nAllegations regarding recruitment, facilitation, and exploitation of minors led to numerous civil lawsuits and criminal investigations.",
+    "photoUrl": "https://i.ibb.co/FkzrVzYQ/IMG-4005.png",
+    "dateAdded": "2026-06-14T14:05:42.820Z",
+    "fileTree": [
+      {
+        "id": "mqduybfmyrddi",
+        "name": "Messages",
+        "type": "folder",
+        "nodeType": "folder",
+        "children": [
+          {
+            "id": "mqduyl5stndbe",
+            "name": "chat_transcription.pdf",
+            "caption": "KirkJWSChats",
+            "type": "doc",
+            "mimeType": "application/pdf",
+            "data": "https://raw.githubusercontent.com/6cfsm75why-dev/goodeggsfile/main/evidence/joseph-wregglesworth/Messages/chat_transcription.pdf",
+            "dateAdded": "2026-06-14T14:06:53.345Z",
+            "nodeType": "file",
+            "size": 1907
+          }
+        ],
+        "dateAdded": "2026-06-14T14:06:40.738Z",
+        "classified": false
+      }
+    ]
+  },
+  {
+    "id": "mqdv39yceuk9i",
+    "name": "Tester",
+    "alias": "Tester",
+    "code": "Tester",
+    "threat": "low",
+    "location": "Tester",
+    "status": "Active",
+    "description": "Tester",
+    "notes": "Tester",
+    "photoUrl": "",
+    "dateAdded": "2026-06-14T14:10:32.100Z",
+    "fileTree": []
+  }
+]
