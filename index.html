@@ -250,6 +250,7 @@ function generateId() { return Date.now().toString(36) + Math.random().toString(
 function subjectToSlug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/--+/g, '-') || 'subject'; }
 function safeFileName(n) { return n.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/__+/g, '_'); }
 function getAuthHeaders() { return appState.githubToken ? { 'Authorization': 'token ' + appState.githubToken } : {}; }
+function hasToken() { return !!appState.githubToken; }
 
 function saveLocalState() {
   const s = { pin: appState.pin, adminPassword: appState.adminPassword, siteTitle: appState.siteTitle, docRef: appState.docRef, tagline: appState.tagline, siteLogo: appState.siteLogo, githubUser: appState.githubUser, githubRepo: appState.githubRepo, githubToken: appState.githubToken, subjects: appState.subjects };
