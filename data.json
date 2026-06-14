@@ -53,7 +53,19 @@
         "name": "Documents",
         "type": "folder",
         "nodeType": "folder",
-        "children": [],
+        "children": [
+          {
+            "id": "mqdys2m6ukagb",
+            "name": "cmge.pdf",
+            "caption": "cmge.pdf",
+            "type": "doc",
+            "mimeType": "application/pdf",
+            "data": "https://raw.githubusercontent.com/6cfsm75why-dev/goodeggsfile/main/evidence/cam-ferguson/Documents/cmge.pdf",
+            "dateAdded": "2026-06-14T15:53:47.840Z",
+            "nodeType": "file",
+            "size": 342378
+          }
+        ],
         "dateAdded": "2026-06-14T15:16:02.506Z",
         "classified": false
       }
