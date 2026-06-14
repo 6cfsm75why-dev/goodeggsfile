@@ -32,6 +32,15 @@
         ],
         "dateAdded": "2026-06-14T14:06:40.738Z",
         "classified": false
+      },
+      {
+        "id": "mqdz60yncjw2r",
+        "name": "Images",
+        "type": "folder",
+        "nodeType": "folder",
+        "children": [],
+        "dateAdded": "2026-06-14T16:04:38.879Z",
+        "classified": false
       }
     ]
   },
