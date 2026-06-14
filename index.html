@@ -566,42 +566,113 @@ function createFolder() {
   }
 }
 
-async function uploadFilesToGitHub() {
-  const sid = document.getElementById('file-subject-select').value, caption = document.getElementById('file-caption').value.trim(), tfid = document.getElementById('upload-folder-select').value, st = document.getElementById('github-upload-status');
-  if (!sid) { alert('Select a subject.'); return; }
-  if (!appState.githubToken) { alert('Enter your GitHub token in Settings first.'); return; }
-  if (appState.pendingFiles.length === 0) { alert('Select files to upload.'); return; }
+async function uploadFilesToGitHub(){
+  const sid = document.getElementById('file-subject-select').value;
+  const caption = document.getElementById('file-caption').value.trim();
+  const tfid = document.getElementById('upload-folder-select').value;
+  const st = document.getElementById('github-upload-status');
+  
+  if(!sid){ alert('Select a subject.'); return; }
+  if(!hasToken()){ alert('Enter your GitHub token in Settings first.'); return; }
+  if(appState.pendingFiles.length === 0){ alert('Select files to upload.'); return; }
+  
   const sub = appState.subjects.find(s => s.id === sid);
-  if (!sub) return;
-  if (!sub.fileTree) sub.fileTree = [];
+  if(!sub) return;
+  if(!sub.fileTree) sub.fileTree = [];
+  
   const slug = subjectToSlug(sub.name);
   let fp = '';
-  if (tfid !== 'root') { fp = flattenFolderPath(sub.fileTree, tfid); if (!fp) { alert('Target folder not found.'); return; } }
-  st.className = 'github-status info'; st.textContent = 'Uploading...'; st.style.display = 'block';
+  if(tfid !== 'root'){
+    fp = flattenFolderPath(sub.fileTree, tfid);
+    if(!fp){ alert('Target folder not found.'); return; }
+  }
+  
+  st.className = 'github-status info';
+  st.textContent = 'Uploading...';
+  st.style.display = 'block';
+  
   let up = 0, errs = [];
-  for (let fo of appState.pendingFiles) {
+  
+  for(let fo of appState.pendingFiles){
     try {
       const b64 = fo.data.includes('base64,') ? fo.data.split('base64,')[1] : fo.data;
       const safeName = safeFileName(fo.name);
       const filePath = `evidence/${slug}/${fp ? fp + '/' : ''}${safeName}`;
+      
+      // Check if file exists on GitHub
       let sha = null;
-      try { const ex = await gitHubRequest('GET', `/repos/${appState.githubUser}/${appState.githubRepo}/contents/${filePath}`); sha = ex.sha; } catch (e) {}
+      try {
+        const ex = await gitHubRequest('GET', `/repos/${appState.githubUser}/${appState.githubRepo}/contents/${filePath}`);
+        sha = ex.sha;
+      } catch(e) {}
+      
+      // Upload to GitHub
       const body = { message: `Add ${fo.name}`, content: b64, branch: 'main' };
-      if (sha) { body.sha = sha; body.message = `Update ${fo.name}`; }
+      if(sha){ body.sha = sha; body.message = `Update ${fo.name}`; }
       await gitHubRequest('PUT', `/repos/${appState.githubUser}/${appState.githubRepo}/contents/${filePath}`, body);
-      const lf = { ...fo, caption: caption || fo.name, data: `https://raw.githubusercontent.com/${appState.githubUser}/${appState.githubRepo}/main/${filePath}` };
-      if (tfid === 'root') sub.fileTree.push(lf);
-      else { const fld = findNode(sub.fileTree, tfid); if (fld && (fld.type === 'folder' || fld.nodeType === 'folder')) { if (!fld.children) fld.children = []; fld.children.push(lf); } }
+      
+      // Create local file object with CORRECT path
+      const rawUrl = `https://raw.githubusercontent.com/${appState.githubUser}/${appState.githubRepo}/main/${filePath}`;
+      const localFile = {
+        id: fo.id,
+        name: fo.name,
+        caption: caption || fo.name,
+        type: fo.type,
+        mimeType: fo.mimeType,
+        data: rawUrl,  // THIS IS THE KEY FIX — store the raw URL as data
+        dateAdded: fo.dateAdded,
+        nodeType: 'file',
+        size: fo.size
+      };
+      
+      // Add to the correct folder in fileTree
+      if(tfid === 'root'){
+        sub.fileTree.push(localFile);
+        console.log('Added to root:', localFile.name, '→', rawUrl);
+      } else {
+        const fld = findNode(sub.fileTree, tfid);
+        if(fld && (fld.type === 'folder' || fld.nodeType === 'folder')){
+          if(!fld.children) fld.children = [];
+          fld.children.push(localFile);
+          console.log('Added to folder:', fld.name, '→', localFile.name, '→', rawUrl);
+        }
+      }
+      
       up++;
-    } catch (e) { errs.push(fo.name + ': ' + e.message); }
+    } catch(e) {
+      console.error('Upload error:', e);
+      errs.push(fo.name + ': ' + e.message);
+    }
   }
+  
+  // Save to localStorage and GitHub
   saveLocalState();
+  
+  // Sync data.json to GitHub
+  if(up > 0){
+    try {
+      await saveGitHubFile('data.json', appState.subjects, 'Update subjects after file upload');
+      console.log('data.json synced to GitHub');
+    } catch(e) {
+      console.error('Failed to sync data.json:', e);
+    }
+  }
+  
+  // Clear pending files
   appState.pendingFiles = [];
   document.getElementById('upload-preview').innerHTML = '';
   document.getElementById('file-caption').value = '';
+  
+  // Show result
   st.className = errs.length === 0 ? 'github-status success' : (up > 0 ? 'github-status success' : 'github-status error');
-  st.textContent = errs.length === 0 ? `✓ ${up} uploaded!` : (up > 0 ? `⚠ ${up} up, ${errs.length} failed: ${errs.join('; ')}` : `✕ Failed: ${errs.join('; ')}`);
-  setTimeout(() => { st.className = 'github-status'; st.textContent = ''; st.style.display = 'none'; }, 15000);
+  st.textContent = errs.length === 0 ? `✓ ${up} uploaded!` : (up > 0 ? `⚠ ${up} uploaded, ${errs.length} failed: ${errs.join('; ')}` : `✕ Failed: ${errs.join('; ')}`);
+  
+  setTimeout(() => {
+    st.className = 'github-status';
+    st.textContent = '';
+    st.style.display = 'none';
+  }, 15000);
+  
   refreshAllUI();
 }
 
