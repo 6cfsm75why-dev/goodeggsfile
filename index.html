@@ -248,7 +248,24 @@ function escHtml(s) { return s ? String(s).replace(/&/g, '&amp;').replace(/</g, 
 function truncate(s, l) { return s && s.length > l ? s.slice(0, l) + '...' : s; }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 function subjectToSlug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/--+/g, '-') || 'subject'; }
-function safeFileName(n) { return n.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/__+/g, '_'); }
+function safeFileName(n) {
+  // Remove any path components (just get the filename)
+  let name = n.split('/').pop();
+  // Replace spaces and special characters
+  name = name.replace(/\s+/g, '_');
+  name = name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  // Make extension lowercase
+  const parts = name.split('.');
+  if (parts.length > 1) {
+    const ext = parts.pop().toLowerCase();
+    name = parts.join('_') + '.' + ext;
+  }
+  // Remove consecutive underscores
+  name = name.replace(/__+/g, '_');
+  // Remove leading/trailing underscores and dots
+  name = name.replace(/^[._]+/, '').replace(/[._]+$/, '');
+  return name || 'file';
+}
 function getAuthHeaders() { return appState.githubToken ? { 'Authorization': 'token ' + appState.githubToken } : {}; }
 function hasToken() { return !!appState.githubToken; }
 
