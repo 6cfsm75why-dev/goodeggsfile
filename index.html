@@ -624,7 +624,8 @@ async function uploadFilesToGitHub(){
     try {
       const b64 = fo.data.includes('base64,') ? fo.data.split('base64,')[1] : fo.data;
       const safeName = safeFileName(fo.name);
-      const filePath = `evidence/${slug}/${fp ? fp + '/' : ''}${safeName}`;
+      const cleanFp = fp ? fp.split('/').map(part => safeFolderName(part)).join('/') : '';
+      const filePath = `evidence/${slug}/${cleanFp ? cleanFp + '/' : ''}${safeName}`;
       
       // Check if file exists on GitHub
       let sha = null;
