@@ -32,6 +32,27 @@
         ],
         "dateAdded": "2026-06-14T14:06:40.738Z",
         "classified": false
+      },
+      {
+        "id": "mqe02rhevqzb1",
+        "name": "images",
+        "type": "folder",
+        "nodeType": "folder",
+        "children": [
+          {
+            "id": "mqe034eo2znxh",
+            "name": "cig.jpeg",
+            "caption": "Cig",
+            "type": "image",
+            "mimeType": "image/jpeg",
+            "data": "https://raw.githubusercontent.com/6cfsm75why-dev/goodeggsfile/main/evidence/joseph-wregglesworth/messages/folder/cig.jpeg",
+            "dateAdded": "2026-06-14T16:30:22.993Z",
+            "nodeType": "file",
+            "size": 40587
+          }
+        ],
+        "dateAdded": "2026-06-14T16:30:06.242Z",
+        "classified": false
       }
     ]
   },
